@@ -1,65 +1,118 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Music, Guitar, Layers, Ear, Activity, Repeat, Waves, BookOpen, SlidersHorizontal, Dices } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function Home() {
+const FEATURES = [
+  {
+    href: "/chords",
+    icon: Music,
+    title: "Chord Explorer",
+    description: "All voicings & inversions for every jazz chord type. Drop 2, drop 3, shell voicings, guide tones.",
+    color: "text-amber-400",
+  },
+  {
+    href: "/scales",
+    icon: Guitar,
+    title: "Scales & Modes",
+    description: "Every jazz mode, bebop scale, pentatonic, altered, diminished — all neck positions visualized.",
+    color: "text-green-400",
+  },
+  {
+    href: "/progressions",
+    icon: Layers,
+    title: "Progression Builder",
+    description: "Build and play jazz progressions with auto voice leading, Roman numeral analysis, and loop playback.",
+    color: "text-blue-400",
+  },
+  {
+    href: "/ear-training",
+    icon: Ear,
+    title: "Ear Training",
+    description: "Interval recognition, chord quality ID, melodic dictation. Adaptive difficulty with session stats.",
+    color: "text-purple-400",
+  },
+  {
+    href: "/voice-leading",
+    icon: Activity,
+    title: "Voice Leading",
+    description: "Visualize smooth voice movement between chords. Detect parallel fifths and octaves.",
+    color: "text-pink-400",
+  },
+  {
+    href: "/reharmonization",
+    icon: Repeat,
+    title: "Reharmonization",
+    description: "Tritone subs, secondary dominants, modal interchange, back-cycling — instant substitution suggestions.",
+    color: "text-orange-400",
+  },
+  {
+    href: "/fretboard",
+    icon: SlidersHorizontal,
+    title: "Fretboard Explorer",
+    description: "Click any note to hear it. Find all occurrences of any note, scale degree, or chord tone.",
+    color: "text-cyan-400",
+  },
+  {
+    href: "/rhythm",
+    icon: Waves,
+    title: "Rhythm & Metronome",
+    description: "Metronome with subdivisions, polyrhythm, and drop-out mode for internalization practice.",
+    color: "text-yellow-400",
+  },
+  {
+    href: "/chord-melody",
+    icon: Dices,
+    title: "Chord Melody",
+    description: "Arrange melody over chord shapes. See notation and tabs side by side.",
+    color: "text-red-400",
+  },
+  {
+    href: "/theory",
+    icon: BookOpen,
+    title: "Theory Lessons",
+    description: "Interactive lessons on ii-V-I, drop 2 voicings, tritone subs, chord scales, and more.",
+    color: "text-indigo-400",
+  },
+];
+
+export default function Dashboard() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="max-w-6xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-foreground">Jazz Guitar Studio</h1>
+        <p className="text-muted-foreground mt-2">
+          A complete system for jazz guitar theory, voicings, ear training, and practice.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {FEATURES.map(({ href, icon: Icon, title, description, color }) => (
+          <Link key={href} href={href}>
+            <Card className="h-full hover:bg-secondary/50 transition-colors cursor-pointer group border-border">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-3">
+                  <Icon className={`w-5 h-5 ${color}`} />
+                  <CardTitle className="text-base group-hover:text-primary transition-colors">
+                    {title}
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-sm leading-relaxed">
+                  {description}
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-8 p-4 rounded-lg border border-primary/20 bg-primary/5">
+        <p className="text-sm text-muted-foreground">
+          <span className="text-primary font-medium">Tip:</span> Click anywhere to activate audio.
+          Use the key selector and BPM control in the top bar to set global context for all tools.
+        </p>
+      </div>
     </div>
   );
 }
