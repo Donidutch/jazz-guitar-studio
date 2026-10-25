@@ -28,8 +28,8 @@ progressions and reharmonisation.
 ## Stack
 
 Next.js 16 (App Router), React 19, TypeScript in strict mode, Tailwind CSS 4,
-shadcn/ui components on Base UI, Zustand for state, and the Web Audio API for
-sound.
+shadcn/ui components on Base UI, Zustand (with Immer) for state, and Tone.js
+for sound, loaded on first use.
 
 ## Run it
 
