@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local AI-assistant files; kept on disk, never committed
+CLAUDE.md
+AGENTS.md
+.claude/

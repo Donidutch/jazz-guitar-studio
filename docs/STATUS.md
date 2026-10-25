@@ -3,7 +3,6 @@ project: jazz-guitar-studio
 state: active
 next:
   - Deploy a live demo on Vercel and link it from the README
-  - Rewrite CLAUDE.md to match the code
   - Clear the 50 lint warnings, mostly unused variables
 ---
 
@@ -43,7 +42,4 @@ blues was 10 bars.
 - The Progressions page's tempo field sets the global playback tempo; each
   progression's own `bpm` and `swing` are stored but nothing in the UI sets
   them.
-- `CLAUDE.md` still names libraries the code does not use (Tonal, VexFlow,
-  jsPDF, MIDI Writer) and component folders that do not exist; it needs
-  rewriting to match the code.
 - No live demo.

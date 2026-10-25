@@ -49,3 +49,7 @@ npm run test:coverage # with a coverage report
 npm run build         # production build
 npm run lint          # ESLint
 ```
+
+## License
+
+[MIT](LICENSE)
