@@ -89,16 +89,16 @@ function classifyVoicingType(notes: ChordTonePosition[], chord: ChordDefinition)
     if (quartalCount >= intervals.length - 1) return "quartal";
   }
 
-  // Drop 2: from close position, drop 2nd from top by octave
-  // Heuristic: if there's a large interval (> 7 semitones) between two adjacent voices
-  if (sortedByMidi.length >= 4) {
-    const intervals = [];
-    for (let i = 1; i < sortedByMidi.length; i++) {
-      intervals.push(sortedByMidi[i].midi - sortedByMidi[i - 1].midi);
-    }
-    const largeIntervalCount = intervals.filter((iv) => iv > 9).length;
-    if (largeIntervalCount === 1) return "drop2";
-    if (largeIntervalCount >= 2) return "drop3";
+  // Drop voicings: a close-position chord with a voice lowered an octave.
+  // Undo the drop (raise those voices back up) and check for close position.
+  // Drop 2 lowers the 2nd voice from the top, which becomes the lowest voice.
+  if (sortedByMidi.length === 4) {
+    const midis = sortedByMidi.map((n) => n.midi);
+    // Already close: raising the bass would also look "close", so check first.
+    if (isClosePosition(midis)) return "close";
+    if (isClosePosition(raiseByOctave(midis, [0]))) return "drop2";
+    if (isClosePosition(raiseByOctave(midis, [1]))) return "drop3";
+    if (isClosePosition(raiseByOctave(midis, [0, 2]))) return "drop2-4";
   }
 
   // Close position: all voices within an octave
@@ -106,6 +106,15 @@ function classifyVoicingType(notes: ChordTonePosition[], chord: ChordDefinition)
   if (span <= 12) return "close";
 
   return "open";
+}
+
+function raiseByOctave(midis: number[], indices: number[]): number[] {
+  return midis.map((m, i) => (indices.includes(i) ? m + 12 : m)).sort((a, b) => a - b);
+}
+
+// Close position: distinct voices, all within one octave.
+function isClosePosition(midis: number[]): boolean {
+  return new Set(midis).size === midis.length && midis[midis.length - 1] - midis[0] < 12;
 }
 
 // ─── Deterministic ID ─────────────────────────────────────────────────────────

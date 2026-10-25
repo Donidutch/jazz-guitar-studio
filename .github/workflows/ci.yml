@@ -17,4 +17,5 @@ jobs:
       - run: npm ci
       # Lint joins once its 8 existing errors are fixed (see docs/STATUS.md).
       - run: npx tsc --noEmit
+      - run: npm test
       - run: npm run build

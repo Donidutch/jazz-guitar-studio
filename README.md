@@ -44,6 +44,8 @@ Then open <http://localhost:3000>. Sound starts after your first click, as
 browsers require.
 
 ```bash
-npm run build   # production build
-npm run lint    # ESLint
+npm test              # theory engine tests (Vitest)
+npm run test:coverage # with a coverage report
+npm run build         # production build
+npm run lint          # ESLint
 ```

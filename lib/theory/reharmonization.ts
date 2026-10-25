@@ -16,7 +16,9 @@ function voiceLeadingScore(a: ChordDefinition, b: ChordDefinition): number {
   const total = Math.min(aNotes.length, bNotes.length);
   let movement = 0;
   for (let i = 0; i < total; i++) {
-    movement += Math.abs(semitonesBetween(aNotes[i], bNotes[i % bNotes.length]));
+    // semitonesBetween counts upward (0-11); a voice moves the shorter way.
+    const up = semitonesBetween(aNotes[i], bNotes[i % bNotes.length]);
+    movement += Math.min(up, 12 - up);
   }
   const maxPossible = total * 6;
   return Math.max(0, Math.round(100 * (1 - movement / maxPossible)));

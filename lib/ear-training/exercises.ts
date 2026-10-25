@@ -39,13 +39,14 @@ export function generateIntervalExercise(
     ? randomFrom<"ascending" | "descending" | "harmonic">(["ascending", "descending", "harmonic"])
     : direction;
 
-  const note1 = midiToNote(rootMidi);
-  const note2 = midiToNote(rootMidi + semitones);
+  const root = midiToNote(rootMidi);
+  const upper = midiToNote(rootMidi + semitones);
 
+  // Players sound note1 then note2, so a descending interval starts on top.
   return {
     type: "interval",
-    note1,
-    note2: dir === "descending" ? note1 : note2,
+    note1: dir === "descending" ? upper : root,
+    note2: dir === "descending" ? root : upper,
     direction: dir,
     correctInterval: intervalName,
   };
@@ -163,7 +164,7 @@ export function weightedRandomInterval(
 ): string {
   const weights = available.map((item) => {
     const rate = missRates[item] ?? 0.5;
-    return Math.exp(2 * (1 - rate)); // higher miss rate = higher weight
+    return Math.exp(2 * rate); // higher miss rate = higher weight
   });
   const total = weights.reduce((a, b) => a + b, 0);
   let rand = Math.random() * total;

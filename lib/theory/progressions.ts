@@ -43,7 +43,7 @@ export function harmonicFunction(
   const rn = romanNumeral.replace(/b|#/g, "");
   const dominant7 = chord.quality === "7" || chord.quality.startsWith("7") || chord.quality === "9" || chord.quality === "13";
   const diminished = chord.quality === "dim7" || chord.quality === "m7b5";
-  const minor = chord.quality.startsWith("m");
+  const minor = chord.quality.startsWith("m") && !chord.quality.startsWith("maj");
   const major = chord.quality === "maj7" || chord.quality.startsWith("maj");
 
   // Tonic function: I, III, VI (in major)
@@ -56,10 +56,10 @@ export function harmonicFunction(
   // Secondary dominant: a dominant 7 chord that's not diatonically dominant
   if (dominant7 && rn !== "V") return "secondary-dominant";
 
-  // Modal interchange: chords borrowed from parallel modes (bVII, bIII, bVI)
-  if (["bVII", "bIII", "bVI", "IV"].includes(romanNumeral)) {
-    if (minor || major) return "modal-interchange";
-  }
+  // Modal interchange: chords borrowed from the parallel minor (bVII, bIII,
+  // bVI, and iv). A major IV is diatonic, so only a minor iv is borrowed.
+  if (["bVII", "bIII", "bVI"].includes(romanNumeral) && (minor || major)) return "modal-interchange";
+  if (romanNumeral === "IV" && minor) return "modal-interchange";
 
   // Subdominant function: II, IV
   if (["II", "IV"].includes(rn)) return "subdominant";
@@ -159,10 +159,10 @@ export function commonProgression(
         { chord: buildChord(T(5), "7"), durationBeats: 4 },
         { chord: buildChord(k, "7"), durationBeats: 4 },
         { chord: buildChord(k, "7"), durationBeats: 4 },
-        { chord: buildChord(T(7), "7"), durationBeats: 2 },
-        { chord: buildChord(T(5), "7"), durationBeats: 2 },
-        { chord: buildChord(k, "7"), durationBeats: 2 },
-        { chord: buildChord(T(7), "7"), durationBeats: 2 },
+        { chord: buildChord(T(7), "7"), durationBeats: 4 },
+        { chord: buildChord(T(5), "7"), durationBeats: 4 },
+        { chord: buildChord(k, "7"), durationBeats: 4 },
+        { chord: buildChord(T(7), "7"), durationBeats: 4 },
       ];
 
     case "rhythm-changes-A":
@@ -180,7 +180,7 @@ export function commonProgression(
     case "rhythm-changes-B":
       return [
         { chord: buildChord(T(4), "7"), durationBeats: 4 }, // III7
-        { chord: buildChord(T(11), "7"), durationBeats: 4 }, // VII7
+        { chord: buildChord(T(9), "7"), durationBeats: 4 }, // VI7
         { chord: buildChord(T(2), "7"), durationBeats: 4 }, // II7 (V/V)
         { chord: buildChord(T(7), "7"), durationBeats: 4 }, // V7
       ];

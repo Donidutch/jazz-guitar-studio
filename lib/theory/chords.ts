@@ -1,6 +1,6 @@
 import type { ChordDefinition, ChordQuality, NoteName } from "@/types";
 import { applyInterval, degreeLabel } from "./intervals";
-import { normalizeNote, preferFlatsForKey } from "./notes";
+import { chromaticIndex, normalizeNote, preferFlatsForKey } from "./notes";
 
 // ─── Chord Formula Dictionary ─────────────────────────────────────────────────
 // Each quality maps to an array of interval strings
@@ -130,14 +130,15 @@ export function chordNotes(chord: ChordDefinition): NoteName[] {
   return [...chord.notes];
 }
 
+// Compare by pitch: chords may spell a note differently (D# for Eb).
 export function isChordTone(note: NoteName, chord: ChordDefinition): boolean {
-  const normalNote = normalizeNote(note);
-  return chord.notes.some((n) => n === normalNote);
+  const pitch = chromaticIndex(normalizeNote(note));
+  return chord.notes.some((n) => chromaticIndex(n) === pitch);
 }
 
 export function intervalInChord(note: NoteName, chord: ChordDefinition): string | null {
-  const normalNote = normalizeNote(note);
-  const idx = chord.notes.indexOf(normalNote);
+  const pitch = chromaticIndex(normalizeNote(note));
+  const idx = chord.notes.findIndex((n) => chromaticIndex(n) === pitch);
   if (idx === -1) return null;
   return degreeLabel(chord.intervals[idx]);
 }

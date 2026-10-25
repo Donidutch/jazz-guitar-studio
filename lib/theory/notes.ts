@@ -75,6 +75,8 @@ export function preferFlatsForKey(key: NoteName): boolean {
 
 export function transposeNote(note: NoteName, semitones: Semitones, preferFlats = false): NoteName {
   const idx = chromaticIndex(note);
+  // chromaticIndex returns -1 for unknown names; transposing that would yield B.
+  if (idx === -1) throw new Error(`Unknown note: ${note}`);
   const newIdx = ((idx + semitones) % 12 + 12) % 12;
   return preferFlats ? CHROMATIC_FLATS[newIdx] : CHROMATIC_SHARPS[newIdx];
 }
