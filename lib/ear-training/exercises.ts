@@ -1,7 +1,7 @@
 import type {
   ChordQuality, EarTrainingMode, Exercise, ExerciseResult,
   IntervalExercise, ChordQualityExercise, MelodicDictationExercise,
-  NoteWithOctave, Voicing
+  NoteWithOctave, StringNumber, Voicing
 } from "@/types";
 import { buildChord } from "@/lib/theory/chords";
 import { generateVoicings } from "@/lib/theory/voicings";
@@ -82,7 +82,7 @@ export function generateChordQualityExercise(
       id: `fallback-${chord.symbol}`,
       chord,
       notes: chord.notes.slice(0, 4).map((note, i) => ({
-        string: (i + 3) as any,
+        string: (i + 3) as StringNumber,
         fret: 5,
         note,
         octave: 4,

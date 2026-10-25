@@ -1,3 +1,4 @@
+import { castDraft } from "immer";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -46,8 +47,8 @@ export const useProgressionStore = create<ProgressionState>()(
       createNew: (name = "New Progression") =>
         set((state) => {
           const p = createProgression(name, state.activeKey, []);
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (state.progressions as any[]).push(p);
+          // Progression is readonly by design; inside an Immer draft it may be added.
+          state.progressions.push(castDraft(p));
           state.activeProgressionId = p.id;
         }),
 
@@ -120,14 +121,12 @@ export const useProgressionStore = create<ProgressionState>()(
           // Re-analyze chords in all progressions that use this key
           for (const prog of state.progressions) {
             if (prog.id === state.activeProgressionId) {
-              (prog as any).key = state.activeKey;
+              prog.key = state.activeKey;
               for (const chord of prog.chords) {
                 const analysis = analyzeChordInKey(chord.chord, state.activeKey);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const c = chord as any;
-                c.romanNumeral = analysis.romanNumeral;
-                c.harmonicFunction = analysis.harmonicFunction;
-                c.secondaryFunction = analysis.secondaryFunction;
+                chord.romanNumeral = analysis.romanNumeral;
+                chord.harmonicFunction = analysis.harmonicFunction;
+                chord.secondaryFunction = analysis.secondaryFunction;
               }
             }
           }
@@ -136,13 +135,13 @@ export const useProgressionStore = create<ProgressionState>()(
       setBpm: (progressionId, bpm) =>
         set((state) => {
           const prog = state.progressions.find((p) => p.id === progressionId);
-          if (prog) (prog as any).bpm = bpm;
+          if (prog) prog.bpm = bpm;
         }),
 
       setSwing: (progressionId, swing) =>
         set((state) => {
           const prog = state.progressions.find((p) => p.id === progressionId);
-          if (prog) (prog as any).swing = swing;
+          if (prog) prog.swing = swing;
         }),
 
       deleteProgression: (id) =>

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { Voicing } from "@/types";
+import type { StringNumber, Voicing } from "@/types";
 import Fretboard from "@/components/fretboard/Fretboard";
 import { STANDARD_TUNING } from "@/lib/theory/guitar";
 import { useGuitarSynth } from "@/components/audio/useGuitarSynth";
@@ -43,9 +43,9 @@ export default function VoicingCard({ voicing, selected, comparing, onClick, onC
   // Muted strings
   for (let s = 1; s <= 6; s++) {
     const hasNote = voicing.notes.some((n) => n.string === s && !n.muted);
-    const stringInSet = voicing.stringSet.includes(s as any);
+    const stringInSet = voicing.stringSet.includes(s as StringNumber);
     if (!hasNote && stringInSet) {
-      displayNotes.push({ string: s as any, fret: 0, label: "" });
+      displayNotes.push({ string: s as StringNumber, fret: 0, label: "" });
     }
   }
 

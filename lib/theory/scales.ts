@@ -1,4 +1,4 @@
-import type { ChordQuality, FretPosition, NoteName, ScaleDefinition, ScaleNeckPosition, ScaleType } from "@/types";
+import type { ChordQuality, FretPosition, NoteName, ScaleDefinition, ScaleNeckPosition, ScaleType, StringNumber } from "@/types";
 import { applyInterval } from "./intervals";
 import { normalizeNote, preferFlatsForKey, chromaticIndex } from "./notes";
 import { fretToMidi, STANDARD_TUNING } from "./guitar";
@@ -156,13 +156,13 @@ export function scaleNeckPositions(
   // Collect all fret positions for scale notes across entire neck
   const allPositions: FretPosition[] = [];
   for (let s = 1; s <= 6; s++) {
-    const openMidi = fretToMidi(tuning, s as any, 0);
+    const openMidi = fretToMidi(tuning, s as StringNumber, 0);
     for (let f = 0; f <= maxFret; f++) {
       const midi = openMidi + f;
       if (spelled.has(midi % 12)) {
         const note = spelled.get(midi % 12) ?? midiToNoteName(midi, preferFlats);
         const octave = Math.floor(midi / 12) - 1;
-        allPositions.push({ string: s as any, fret: f, note, octave, midi });
+        allPositions.push({ string: s as StringNumber, fret: f, note, octave, midi });
       }
     }
   }

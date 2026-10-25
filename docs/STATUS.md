@@ -2,9 +2,9 @@
 project: jazz-guitar-studio
 state: active
 next:
-  - Fix the 8 lint errors, then add lint to CI
   - Deploy a live demo on Vercel and link it from the README
   - Rewrite CLAUDE.md to match the code
+  - Clear the 50 lint warnings, mostly unused variables
 ---
 
 # Status
@@ -21,7 +21,8 @@ tritone sub of G7 is Db7, Gb major has Cb), including double sharps and flats;
 fretboard and voicing labels use that spelling, so the Scales page now marks
 the root in flat keys. `npm audit` reports 0 vulnerabilities (27 at revival):
 Next.js moved from 16.2.0 to 16.4.3, the first release past its critical
-remote-code-execution advisories, and unused packages were removed.
+remote-code-execution advisories, and unused packages were removed. CI runs
+lint (0 errors), type check, tests and build.
 
 Fixed on 2026-10-25, each shown by a test that failed first: unknown note
 names silently became B; `isChordTone` missed enharmonic spellings; the major
@@ -38,9 +39,10 @@ blues was 10 bars.
 
 - Voicings are only generated on adjacent strings with none muted, so
   string-skipping shapes such as drop 3 never appear.
-- Lint: 8 errors (3 `no-explicit-any` in `store/progressionStore.ts`, others)
-  and 50 warnings, mostly unused variables. CI runs type check, tests and
-  build, and adds lint once these are fixed.
+- Lint: 50 warnings, mostly unused variables and imports.
+- The Progressions page's tempo field sets the global playback tempo; each
+  progression's own `bpm` and `swing` are stored but nothing in the UI sets
+  them.
 - `CLAUDE.md` still names libraries the code does not use (Tonal, VexFlow,
   jsPDF, MIDI Writer) and component folders that do not exist; it needs
   rewriting to match the code.
