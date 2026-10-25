@@ -1,5 +1,5 @@
 import type { NoteName, Semitones } from "@/types";
-import { chromaticIndex, transposeNote } from "./notes";
+import { chromaticIndex, spellInterval, transposeNote } from "./notes";
 
 // Maps interval shorthand to semitone count
 export const INTERVAL_SEMITONES: Record<string, number> = {
@@ -8,6 +8,7 @@ export const INTERVAL_SEMITONES: Record<string, number> = {
   "2M": 2,  "2": 2,
   "b3": 3,  "m3": 3,  "#2": 3,
   "3M": 4,  "3": 4,
+  "b4": 4,
   "4P": 5,  "4": 5,   "11": 5,
   "#4": 6,  "b5": 6,  "A4": 6,
   "5P": 7,  "5": 7,
@@ -89,9 +90,24 @@ export function intervalSemitones(interval: string): number {
   throw new Error(`Unknown interval: ${interval}`);
 }
 
+// Which scale degree each interval names (2 for b2, b9, #9; 4 for #11), so a
+// note is spelled by letter: a minor third above C is Eb, never D#.
+const INTERVAL_DEGREES: Record<string, number> = {
+  "1P": 1, "R": 1, "8P": 1, "8": 1,
+  "b2": 2, "m2": 2, "2M": 2, "2": 2, "#2": 2, "b9": 2, "9M": 2, "9": 2, "#9": 2,
+  "b3": 3, "m3": 3, "3M": 3, "3": 3, "b10": 3, "10M": 3,
+  "b4": 4, "4P": 4, "4": 4, "11": 4, "#4": 4, "A4": 4, "11P": 4, "#11": 4,
+  "b5": 5, "5P": 5, "5": 5, "#5": 5,
+  "b6": 6, "6M": 6, "6": 6, "13": 6, "b13": 6, "13M": 6,
+  "b7": 7, "m7": 7, "7m": 7, "7M": 7, "7": 7, "maj7": 7,
+};
+
 export function applyInterval(root: NoteName, interval: string, preferFlats = false): NoteName {
   const semitones = intervalSemitones(interval);
-  return transposeNote(root, semitones, preferFlats);
+  const spelled = spellInterval(root, INTERVAL_DEGREES[interval] ?? 1, semitones);
+  // A triple accidental (e.g. a diminished interval above a double flat) has
+  // no spelling worth showing; fall back to the plain chromatic name.
+  return spelled ?? transposeNote(root, semitones, preferFlats);
 }
 
 export function intervalFromSemitones(semitones: Semitones): string {

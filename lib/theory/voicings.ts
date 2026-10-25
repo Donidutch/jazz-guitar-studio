@@ -49,7 +49,8 @@ function buildChordToneMap(
       const noteIdx = midi % 12;
       const chordIdx = chordNoteIndices.indexOf(noteIdx);
       if (chordIdx !== -1) {
-        const note = midiToNoteName(midi, useFlats);
+        // Show the chord's spelling (Eb in Cm7), not a key-wide sharp/flat choice.
+        const note = chord.notes[chordIdx] ?? midiToNoteName(midi, useFlats);
         const octave = Math.floor(midi / 12) - 1;
         const intervalName = degreeLabel(chord.intervals[chordIdx]);
         positions.push({ string, fret: f, midi, note, octave, intervalName, intervalIndex: chordIdx });

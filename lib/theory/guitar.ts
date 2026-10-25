@@ -97,15 +97,16 @@ export function noteSetPositionsOnNeck(
   maxFret = 15,
   preferFlats = false
 ): FretPosition[] {
-  const noteIndices = new Set(notes.map((n) => chromaticIndex(normalizeNote(n))));
+  // Label each pitch with the caller's spelling, so a Bb scale shows Bb, not A#.
+  const spelled = new Map(notes.map((n) => [chromaticIndex(normalizeNote(n)), n] as const));
   const positions: FretPosition[] = [];
   for (let s = 1; s <= 6; s++) {
     const openMidi = fretToMidi(tuning, s as StringNumber, 0);
     for (let f = 0; f <= maxFret; f++) {
       const midi = openMidi + f;
-      if (noteIndices.has(midi % 12)) {
+      if (spelled.has(midi % 12)) {
         const octave = Math.floor(midi / 12) - 1;
-        const note = midiToNoteName(midi, preferFlats);
+        const note = spelled.get(midi % 12) ?? midiToNoteName(midi, preferFlats);
         positions.push({ string: s as StringNumber, fret: f, note, octave, midi });
       }
     }

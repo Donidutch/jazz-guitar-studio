@@ -2,8 +2,8 @@
 project: jazz-guitar-studio
 state: active
 next:
-  - Spell notes correctly per chord and key (Cm7 as C Eb G Bb, not C D# G A#)
   - Fix the 8 lint errors, then add lint to CI
+  - Remove unused dependencies, move shadcn to devDependencies, patch next
   - Deploy a live demo on Vercel and link it from the README
 ---
 
@@ -14,8 +14,12 @@ drive, 4 commits). The original GitHub repository no longer exists.
 
 **Works:** `npm run build` succeeds on Next.js 16.2 with 0 TypeScript errors
 and 16 routes, 15 of them prerendered static pages. Every internal link
-resolves (14 checked against a production build). The theory engine has 90
-Vitest tests (91% of lines in `lib/theory` and `lib/ear-training`), run in CI.
+resolves (14 checked against a production build). The theory engine has 109
+Vitest tests (92% of lines in `lib/theory` and `lib/ear-training`), run in CI.
+Notes are spelled by letter for each chord and scale (Cm7 is C Eb G Bb, the
+tritone sub of G7 is Db7, Gb major has Cb), including double sharps and flats;
+fretboard and voicing labels use that spelling, so the Scales page now marks
+the root in flat keys.
 
 Fixed on 2026-10-25, each shown by a test that failed first: unknown note
 names silently became B; `isChordTone` missed enharmonic spellings; the major
@@ -30,8 +34,6 @@ blues was 10 bars.
 
 **Broken / open:**
 
-- Note spelling follows the key's sharp/flat preference, not the chord, so
-  Cm7 shows as C D# G A# and the tritone sub of G7 as C#7 (a `todo` test).
 - Voicings are only generated on adjacent strings with none muted, so
   string-skipping shapes such as drop 3 never appear.
 - Lint: 8 errors (3 `no-explicit-any` in `store/progressionStore.ts`, others)

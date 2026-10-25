@@ -4,7 +4,7 @@ import type {
 } from "@/types";
 import { buildChord } from "./chords";
 import { normalizeNote, transposeNote, chromaticIndex } from "./notes";
-import { semitonesBetween } from "./intervals";
+import { applyInterval, semitonesBetween } from "./intervals";
 
 // ─── Roman Numeral Definitions ────────────────────────────────────────────────
 
@@ -131,7 +131,9 @@ export function commonProgression(
   key: NoteName
 ): { chord: ChordDefinition; durationBeats: number }[] {
   const k = normalizeNote(key);
-  const T = (semitones: number) => transposeNote(k, semitones);
+  // Degrees of the key, spelled by letter: the bVII of F is Eb, not D#.
+  const DEGREE: Record<number, string> = { 2: "2M", 4: "3M", 5: "4P", 7: "5P", 9: "6M", 10: "b7", 11: "7M" };
+  const T = (semitones: number) => applyInterval(k, DEGREE[semitones]);
 
   switch (type) {
     case "ii-V-I":

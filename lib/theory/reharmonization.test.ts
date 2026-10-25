@@ -18,7 +18,7 @@ describe("tritoneSub", () => {
   it("replaces G7 with the dominant a tritone away, sharing B and F", () => {
     const sub = tritoneSub(buildChord("G", "7"));
     expect(sub).not.toBeNull();
-    expect(pc(sub!.substitutionChord.root)).toBe(pc("Db"));
+    expect(sub!.substitutionChord.symbol).toBe("Db7");
     expect(pcs(sub!.commonTones)).toEqual(pcs(["B", "F"]));
   });
 

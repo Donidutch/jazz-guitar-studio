@@ -34,6 +34,24 @@ describe("buildScale", () => {
   });
 });
 
+describe("scale spelling", () => {
+  it.each<[string, ScaleType, string[]]>([
+    ["Bb", "major", ["Bb", "C", "D", "Eb", "F", "G", "A"]],
+    ["F#", "major", ["F#", "G#", "A#", "B", "C#", "D#", "E#"]],
+    ["Gb", "major", ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"]],
+    ["Eb", "dorian", ["Eb", "F", "Gb", "Ab", "Bb", "C", "Db"]],
+    ["C", "altered", ["C", "Db", "Eb", "Fb", "Gb", "Ab", "Bb"]],
+  ])("spells %s %s with one letter per degree", (root, type, expected) => {
+    expect(buildScale(root, type).notes).toEqual(expected);
+  });
+
+  it("labels the neck with the scale's spelling, so the root is findable", () => {
+    const labels = new Set(scaleNeckPositions(buildScale("Bb", "major")).flatMap((p) => p.notes.map((n) => n.note)));
+    expect(labels.has("Bb")).toBe(true);
+    expect(labels.has("A#")).toBe(false);
+  });
+});
+
 describe("scaleNeckPositions", () => {
   const positions = scaleNeckPositions(buildScale("G", "major"));
 

@@ -45,6 +45,12 @@ describe("commonProgression", () => {
     expect(pitches(bars)).toEqual(pitches(["C", "C", "C", "C", "F", "F", "C", "C", "G", "F", "C", "G"]));
   });
 
+  it("spells degrees by letter in flat keys", () => {
+    // The bVII of an F Dorian vamp is Eb, not D#.
+    expect(commonProgression("modal-vamp", "F").map((c) => c.chord.root)).toEqual(["F", "Eb"]);
+    expect(commonProgression("ii-V-I", "Bb").map((c) => c.chord.symbol)).toEqual(["Cm7", "F7", "Bbmaj7"]);
+  });
+
   it("builds the rhythm-changes bridge as III7 VI7 II7 V7", () => {
     // In Bb: D7 G7 C7 F7.
     const chords = commonProgression("rhythm-changes-B", "Bb");

@@ -19,7 +19,7 @@ export const SCALE_FORMULAS: Record<ScaleType, string[]> = {
   "aeolian":          ["1P", "2M", "b3", "4P", "5P", "b6", "b7"],
   "locrian":          ["1P", "b2", "b3", "4P", "b5", "b6", "b7"],
   "lydian-dominant":  ["1P", "2M", "3M", "#4", "5P", "6M", "b7"],
-  "altered":          ["1P", "b2", "#2", "3M", "b5", "#5", "b7"],
+  "altered":          ["1P", "b2", "b3", "b4", "b5", "b6", "b7"],
   "half-diminished":  ["1P", "2M", "b3", "4P", "b5", "b6", "b7"],
   "phrygian-dominant":["1P", "b2", "3M", "4P", "5P", "b6", "b7"],
   "whole-tone":       ["1P", "2M", "3M", "#4", "#5", "b7"],
@@ -149,7 +149,7 @@ export function scaleNeckPositions(
   tuning: GuitarTuning = STANDARD_TUNING,
   maxFret = 17
 ): ScaleNeckPosition[] {
-  const noteIndices = new Set(scale.notes.map((n) => chromaticIndex(n)));
+  const spelled = new Map(scale.notes.map((n) => [chromaticIndex(n), n] as const));
   const rootIndex = chromaticIndex(scale.root);
   const preferFlats = preferFlatsForKey(scale.root);
 
@@ -159,8 +159,8 @@ export function scaleNeckPositions(
     const openMidi = fretToMidi(tuning, s as any, 0);
     for (let f = 0; f <= maxFret; f++) {
       const midi = openMidi + f;
-      if (noteIndices.has(midi % 12)) {
-        const note = midiToNoteName(midi, preferFlats);
+      if (spelled.has(midi % 12)) {
+        const note = spelled.get(midi % 12) ?? midiToNoteName(midi, preferFlats);
         const octave = Math.floor(midi / 12) - 1;
         allPositions.push({ string: s as any, fret: f, note, octave, midi });
       }

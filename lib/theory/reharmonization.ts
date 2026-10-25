@@ -1,7 +1,7 @@
 import type { ChordDefinition, ChordQuality, NoteName, Substitution, SubstitutionType } from "@/types";
 import { buildChord } from "./chords";
-import { normalizeNote, transposeNote, chromaticIndex } from "./notes";
-import { semitonesBetween } from "./intervals";
+import { normalizeNote, chromaticIndex } from "./notes";
+import { applyInterval, semitonesBetween } from "./intervals";
 
 // ─── Common Tones ─────────────────────────────────────────────────────────────
 
@@ -32,7 +32,7 @@ export function tritoneSub(chord: ChordDefinition): Substitution | null {
     || chord.quality === "7#11" || chord.quality === "9#11";
   if (!isDominant) return null;
 
-  const subRoot = transposeNote(chord.root, 6);
+  const subRoot = applyInterval(chord.root, "b5"); // G7 -> Db7, not C#7
   const sub = buildChord(subRoot, "7");
   const commonTones = findCommonTones(chord, sub);
 
@@ -53,7 +53,7 @@ export function secondaryDominants(chord: ChordDefinition, key: NoteName): Subst
 
   // Check if chord is a diatonic target that could have a secondary dominant applied to it
   // V7 of this chord = dominant 7 a perfect 5th above chord root
-  const v7Root = transposeNote(chord.root, 7);
+  const v7Root = applyInterval(chord.root, "5P");
   const v7 = buildChord(v7Root, "7");
   const semitones = semitonesBetween(k, chord.root);
 
@@ -79,15 +79,15 @@ export function modalInterchangeSubs(chord: ChordDefinition, key: NoteName): Sub
 
   // Borrowed chords from parallel minor (natural minor = Aeolian mode)
   // bVII maj7 (borrowed from Aeolian)
-  const bVIIRoot = transposeNote(k, 10);
+  const bVIIRoot = applyInterval(k, "b7");
   const bVII = buildChord(bVIIRoot, "maj7");
 
   // bVI maj7 (borrowed from Aeolian)
-  const bVIRoot = transposeNote(k, 8);
+  const bVIRoot = applyInterval(k, "b6");
   const bVI = buildChord(bVIRoot, "maj7");
 
   // iv minor (borrowed from parallel minor)
-  const ivRoot = transposeNote(k, 5);
+  const ivRoot = applyInterval(k, "4P");
   const iv = buildChord(ivRoot, "m7");
 
   for (const sub of [bVII, bVI, iv]) {
@@ -107,8 +107,9 @@ export function modalInterchangeSubs(chord: ChordDefinition, key: NoteName): Sub
 
 export function passingDiminished(chord: ChordDefinition): Substitution[] {
   // Diminished chord a half-step below or above
-  const below = buildChord(transposeNote(chord.root, -1), "dim7");
-  const above = buildChord(transposeNote(chord.root, 1), "dim7");
+  // A half step below is the leading tone (B below C); above is the b2 (Db).
+  const below = buildChord(applyInterval(chord.root, "7M"), "dim7");
+  const above = buildChord(applyInterval(chord.root, "b2"), "dim7");
   const subs: Substitution[] = [];
 
   for (const sub of [below, above]) {
@@ -132,7 +133,7 @@ export function backCycle(chord: ChordDefinition, steps = 2): Substitution[] {
   let current = chord;
 
   for (let i = 0; i < steps; i++) {
-    const backedRoot = transposeNote(current.root, 7); // up a fifth = back one step in cycle
+    const backedRoot = applyInterval(current.root, "5P"); // up a fifth = back one step in cycle
     const backed = buildChord(backedRoot, "7");
     const commonTones = findCommonTones(current, backed);
     subs.push({
@@ -155,7 +156,7 @@ export function deceptiveResolution(chord: ChordDefinition, key: NoteName): Subs
   const semitones = semitonesBetween(k, chord.root);
   if (semitones !== 7) return null; // only works for the actual V7
 
-  const viRoot = transposeNote(k, 9);
+  const viRoot = applyInterval(k, "6M");
   const vi = buildChord(viRoot, "m7");
   const commonTones = findCommonTones(chord, vi);
 

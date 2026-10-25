@@ -48,6 +48,13 @@ describe("generateVoicings", () => {
   });
 });
 
+describe("voicing note names", () => {
+  it("use the chord's spelling", () => {
+    const names = new Set(generateVoicings(buildChord("C", "m7")).flatMap((v) => v.notes.map((n) => n.note)));
+    expect([...names].sort()).toEqual(["Bb", "C", "Eb", "G"]);
+  });
+});
+
 describe("filterVoicings", () => {
   const voicings = generateVoicings(cmaj7, STANDARD_TUNING);
 

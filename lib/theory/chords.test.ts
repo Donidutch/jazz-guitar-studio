@@ -41,7 +41,18 @@ describe("buildChord", () => {
     expect(buildSlashChord("C", "7", "E").bassNote).toBe("E");
   });
 
-  it.todo("spells Cm7 as C Eb G Bb rather than C D# G A#");
+  it.each<[string, ChordQuality, string[]]>([
+    ["C", "m7", ["C", "Eb", "G", "Bb"]],
+    ["G", "7", ["G", "B", "D", "F"]],
+    ["Db", "7", ["Db", "F", "Ab", "Cb"]],
+    ["F#", "maj7", ["F#", "A#", "C#", "E#"]],
+    ["Bb", "m7b5", ["Bb", "Db", "Fb", "Ab"]],
+    ["C", "7#9", ["C", "E", "G", "Bb", "D#"]],
+    ["C", "7b13", ["C", "E", "G", "Bb", "Ab"]],
+    ["Eb", "maj9", ["Eb", "G", "Bb", "D", "F"]],
+  ])("spells %s%s by letter: %j", (root, quality, expected) => {
+    expect(buildChord(root, quality).notes).toEqual(expected);
+  });
 });
 
 describe("isChordTone and intervalInChord", () => {

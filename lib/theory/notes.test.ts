@@ -7,6 +7,7 @@ import {
   noteToMidi,
   normalizeNote,
   preferFlatsForKey,
+  spellInterval,
   transposeNote,
 } from "./notes";
 
@@ -46,6 +47,27 @@ describe("normalizeNote and enharmonics", () => {
   it("prefers flats in flat keys only", () => {
     expect(preferFlatsForKey("Bb")).toBe(true);
     expect(preferFlatsForKey("G")).toBe(false);
+  });
+});
+
+describe("spelled notes", () => {
+  it("reads double sharps and flats as pitches", () => {
+    expect(chromaticIndex("F##")).toBe(chromaticIndex("G"));
+    expect(chromaticIndex("Dbb")).toBe(chromaticIndex("C"));
+    expect(chromaticIndex("X")).toBe(-1);
+  });
+
+  it("keeps octaves right across the B-C boundary", () => {
+    expect(noteToMidi("Cb4")).toBe(59); // the B below middle C
+    expect(noteToMidi("B#3")).toBe(60); // middle C
+  });
+
+  it("spells intervals by letter", () => {
+    expect(spellInterval("C", 3, 3)).toBe("Eb");
+    expect(spellInterval("Db", 7, 10)).toBe("Cb");
+    expect(spellInterval("A", 6, 9)).toBe("F#");
+    expect(spellInterval("Gb", 7, 9)).toBe("Fbb");
+    expect(spellInterval("Cbb", 3, 3)).toBeNull(); // Ebbb: a triple flat
   });
 });
 
